@@ -36,7 +36,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     try {
       let newCart: Product[] = [];
 
-      const stockProduct = await api
+      const stockProduct: Stock = await api
         .get(`stock/${productId}`)
         .then((result) => result.data);
 
@@ -46,7 +46,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       }
 
       const productCartIndex = cart.findIndex(
-        (productCart) => productCart.id == productId
+        (productCart) => productCart.id === productId
       );
 
       if (productCartIndex > -1) {
@@ -77,6 +77,12 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
   const removeProduct = (productId: number) => {
     try {
+      const productCartIndex = cart.findIndex(
+        (productCart) => productCart.id === productId
+      );
+      if (productCartIndex < 0) {
+        throw new Error();
+      }
       const filteredCart = cart.filter((product) => product.id !== productId);
       localStorage.setItem('@RocketShoes:cart', JSON.stringify(filteredCart));
       setCart(filteredCart);
@@ -90,7 +96,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     amount,
   }: UpdateProductAmount) => {
     try {
-      const stockProduct = await api
+      const stockProduct: Stock = await api
         .get(`stock/${productId}`)
         .then((result) => result.data);
 
